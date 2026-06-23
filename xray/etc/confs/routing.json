@@ -1,0 +1,32 @@
+{
+    "routing": {
+        "domainStrategy": "IPIfNonMatch",
+        "domainMatcher": "mph",
+        "rules": [
+            {
+                "type": "field",
+                "inboundTag": ["proxy-in", "socks-in"],
+                "port": 53,
+                "outboundTag": "dns-out"
+            },
+            {
+                "type": "field",
+                "ip": ["geoip:private"],
+                "outboundTag": "direct"
+            },
+            {
+                "type": "field",
+                "domain": [
+                    "localhost",
+                    "*.local"
+                ],
+                "outboundTag": "direct"
+            },
+            {
+                "type": "field",
+                "network": "tcp,udp",
+                "outboundTag": "proxy"
+            }
+        ]
+    }
+}

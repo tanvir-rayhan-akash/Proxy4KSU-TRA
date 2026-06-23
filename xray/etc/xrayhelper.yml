@@ -1,0 +1,40 @@
+xrayHelper:
+    coreType: xray
+    corePath: /data/adb/xray/bin/xray
+    coreConfig: /data/adb/xray/confs/
+    dataDir: /data/adb/xray/data/
+    runDir: /data/adb/xray/run/
+    proxyTag: proxy
+    allowInsecure: true
+    subList:
+        - https://example.com/v2rayNg
+        - clash+https://example.com/mihomo
+    userAgent: proxy4ksu
+clash:
+    dnsPort: 65533
+    template: /data/adb/xray/mihomoconfs/template.yaml
+adgHome:
+    enable: false
+    address: 127.0.0.1:65530
+    workDir: /data/adb/xray/adghomeconfs/
+    dnsPort: 65531
+proxy:
+    method: tproxy
+    tproxyPort: 65535
+    socksPort: 65534
+    tunDevice: xtun
+    enableIPv6: false
+    autoDNSStrategy: false
+    stopWhenWifi: true
+    mode: blacklist
+    pkgList:
+        - 'com.tencent.*'
+        - 'com.baidu.*'
+        - 'com.netease.*'
+        - 'com.taobao.*'
+        - 'com.bilibili.*'
+        - 'cn.*'
+        - '*china*'
+    apList:
+        - wlan+
+        - rndis+

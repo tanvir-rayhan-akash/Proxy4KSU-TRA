@@ -1,0 +1,59 @@
+{
+    "route": {
+        "rule_set": [
+            {
+                "tag": "geosite-google",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-google.srs",
+                "download_detour": "proxy",
+                "update_interval": "7d"
+            },
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs",
+                "download_detour": "proxy",
+                "update_interval": "7d"
+            },
+            {
+                "tag": "geoip-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+                "download_detour": "proxy",
+                "update_interval": "7d"
+            }
+        ],
+        "rules": [
+            {
+                "protocol": ["dns"],
+                "outbound": "dns-out"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "domain_suffix": [".local", ".lan"],
+                "outbound": "direct"
+            },
+            {
+                "rule_set": "geosite-google",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": "geosite-cn",
+                "outbound": "direct"
+            },
+            {
+                "rule_set": "geoip-cn",
+                "outbound": "direct"
+            }
+        ],
+        "final": "proxy",
+        "override_android_vpn": false,
+        "auto_detect_interface": true
+    }
+}

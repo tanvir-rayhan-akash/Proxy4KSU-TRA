@@ -1,0 +1,11 @@
+bandwidth:
+    up: 50 mbps
+    down: 200 mbps
+lazy: false
+fastOpen: true
+tcpTProxy:
+    listen: :65535
+udpTProxy:
+    listen: :65535
+socks5:
+    listen: 127.0.0.1:65534

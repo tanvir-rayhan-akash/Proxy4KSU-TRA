@@ -1,0 +1,88 @@
+#!/system/bin/sh
+# net.inotify - TRA Edition v3.5.1
+# Author: TRA - Tanvir Rayhan Akash
+# inotify trigger — net fs change → immediate core action
+
+xrayhelper=/data/adb/xray/bin/xrayhelper
+xrayhelper_conf=/data/adb/xray/xrayhelper.yml
+mod_dir=/data/adb/modules/proxy4ksu
+run_dir=/data/adb/xray/run
+lock_dir=${run_dir}/net_restart.lock
+events=$1
+
+log_msg() { echo "[TRA-inotify] $1 [$(date '+%H:%M:%S')]"; }
+
+stop_when_wifi_enabled() {
+    grep -q 'stopWhenWifi:[[:space:]]*true' "${xrayhelper_conf}" 2>/dev/null
+}
+
+get_net_state() {
+    local dev
+    dev=$(ip route get 1.1.1.1 2>/dev/null | grep -o 'dev [^ ]*' | awk '{print $2}')
+    [ -z "$dev" ] && { echo "none"; return; }
+    case "$dev" in
+        wlan*|wifi*|swlan*|ap+*)     echo "wifi" ;;
+        rmnet*|ccmni*|wwan*|rndis*) echo "mobile" ;;
+        *)                           echo "other" ;;
+    esac
+}
+
+core_running() {
+    local pid
+    pid=$(cat "${run_dir}/core.pid" 2>/dev/null)
+    [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null
+}
+
+stop_xray() {
+    log_msg "stop ← $1"
+    "${xrayhelper}" -c "${xrayhelper_conf}" proxy disable 2>/dev/null
+    "${xrayhelper}" -c "${xrayhelper_conf}" service stop 2>/dev/null
+}
+
+start_xray() {
+    log_msg "start → $1"
+    "${xrayhelper}" -c "${xrayhelper_conf}" service stop 2>/dev/null
+    "${xrayhelper}" -c "${xrayhelper_conf}" service start && \
+        "${xrayhelper}" -c "${xrayhelper_conf}" proxy enable
+}
+
+main() {
+    [ -f /data/adb/xray/manual ] && return
+    [ -f "${mod_dir}/disable" ] && return
+
+    # শুধু write event এ react করো
+    case "$events" in
+        *w*) ;;
+        *) return ;;
+    esac
+
+    mkdir -p "${run_dir}"
+    mkdir "${lock_dir}" 2>/dev/null || return
+
+    (
+        sleep 1  # network stack settle
+        local state
+        state=$(get_net_state)
+        log_msg "inotify trigger: state=$state"
+
+        case "$state" in
+            mobile|other)
+                core_running || start_xray "$state"
+                ;;
+            wifi)
+                if stop_when_wifi_enabled; then
+                    core_running && stop_xray "wifi-policy"
+                else
+                    core_running || start_xray "wifi"
+                fi
+                ;;
+            none)
+                core_running && stop_xray "no-net"
+                ;;
+        esac
+
+        rmdir "${lock_dir}" 2>/dev/null
+    ) &
+}
+
+main

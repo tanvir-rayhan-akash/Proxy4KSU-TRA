@@ -1,0 +1,41 @@
+{
+    "dns": {
+        "servers": [
+            {
+                "tag": "cloudflare-doh",
+                "address": "https://1.1.1.1/dns-query",
+                "detour": "proxy"
+            },
+            {
+                "tag": "google-doh",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy"
+            },
+            {
+                "tag": "cloudflare-plain",
+                "address": "1.1.1.1",
+                "detour": "direct"
+            },
+            {
+                "tag": "google-plain",
+                "address": "8.8.8.8",
+                "detour": "direct"
+            }
+        ],
+        "rules": [
+            {
+                "outbound": "any",
+                "server": "cloudflare-plain"
+            },
+            {
+                "rule_set": ["geosite-cn"],
+                "server": "cloudflare-plain"
+            }
+        ],
+        "final": "cloudflare-doh",
+        "strategy": "ipv4_only",
+        "disable_cache": false,
+        "disable_expire": false,
+        "independent_cache": true
+    }
+}

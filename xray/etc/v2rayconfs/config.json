@@ -1,0 +1,145 @@
+{
+    "log": {
+        "access": {
+            "type": "None"
+        },
+        "error": {
+            "level": "Warning",
+            "type": "Console"
+        }
+    },
+    "dns": {
+        "domainMatcher": "mph",
+        "nameServer": [
+            {
+                "address": {
+                    "address": "https+local://1.1.1.1/dns-query"
+                }
+            },
+            {
+                "address": {
+                    "address": "https+local://8.8.8.8/dns-query"
+                }
+            },
+            {
+                "address": {
+                    "address": "1.1.1.1"
+                }
+            }
+        ],
+        "queryStrategy": "USE_IP4"
+    },
+    "inbounds": [
+        {
+            "port": 65535,
+            "protocol": "dokodemo-door",
+            "settings": {
+                "followRedirect": true,
+                "networks": "udp,tcp",
+                "bufferSize": 16384
+            },
+            "sniffing": {
+                "destOverride": [
+                    "http",
+                    "tls",
+                    "quic"
+                ],
+                "enabled": true,
+                "metadataOnly": false
+            },
+            "streamSettings": {
+                "socketSettings": {
+                    "tproxy": "tproxy",
+                    "tcpFastOpen": true,
+                    "tcpNoDelay": true
+                }
+            },
+            "tag": "proxy-in"
+        },
+        {
+            "listen": "127.0.0.1",
+            "port": 65534,
+            "protocol": "socks",
+            "settings": {
+                "packetEncoding": "Packet",
+                "udpEnabled": true
+            },
+            "sniffing": {
+                "destOverride": [
+                    "http",
+                    "tls",
+                    "quic"
+                ],
+                "enabled": true,
+                "metadataOnly": false
+            },
+            "streamSettings": {
+                "socketSettings": {
+                    "tcpFastOpen": true,
+                    "tcpNoDelay": true
+                }
+            },
+            "tag": "socks-in"
+        }
+    ],
+    "outbounds": [
+        {
+            "protocol": "dns",
+            "tag": "dns-out"
+        },
+        {
+            "protocol": "freedom",
+            "streamSettings": {
+                "socketSettings": {
+                    "tcpFastOpen": true,
+                    "tcpNoDelay": true
+                }
+            },
+            "tag": "direct"
+        },
+        {
+            "protocol": "blackhole",
+            "tag": "block"
+        },
+        {
+            "tag": "proxy"
+        }
+    ],
+    "router": {
+        "domainStrategy": "IpIfNonMatch",
+        "domainMatcher": "mph",
+        "rule": [
+            {
+                "inboundTag": [
+                    "proxy-in",
+                    "socks-in"
+                ],
+                "networks": "udp",
+                "portList": "53",
+                "tag": "dns-out"
+            },
+            {
+                "ip": ["geoip:private"],
+                "networks": "tcp,udp",
+                "tag": "direct"
+            },
+            {
+                "domain": ["*.local", "localhost"],
+                "networks": "tcp,udp",
+                "tag": "direct"
+            },
+            {
+                "geoDomain": [
+                    {"code": "cn"},
+                    {"code": "apple-cn"}
+                ],
+                "networks": "tcp,udp",
+                "tag": "direct"
+            },
+            {
+                "networks": "tcp,udp",
+                "tag": "proxy"
+            }
+        ]
+    }
+}

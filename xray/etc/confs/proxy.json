@@ -1,0 +1,34 @@
+{
+    "outbounds": [
+        {
+            "protocol": "dns",
+            "tag": "dns-out"
+        },
+        {
+            "protocol": "freedom",
+            "settings": {
+                "domainStrategy": "UseIPv4",
+                "redirect": ""
+            },
+            "streamSettings": {
+                "sockopt": {
+                    "tcpFastOpen": true,
+                    "tcpNoDelay": true
+                }
+            },
+            "tag": "direct"
+        },
+        {
+            "protocol": "blackhole",
+            "settings": {
+                "response": {
+                    "type": "http"
+                }
+            },
+            "tag": "block"
+        },
+        {
+            "tag": "proxy"
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+log-level: warning
+tproxy-port: 65535
+socks-port: 65534
+bind-address: '*'
+allow-lan: true
+ipv6: false
+find-process-mode: "off"
+keep-alive-interval: 60
+keep-alive-idle: 300
+tcp-concurrent: true
+geo-auto-update: false
+geo-update-interval: 24
+external-controller: 127.0.0.1:65532
+external-ui: /data/adb/xray/data/Yacd-meta-gh-pages
+dns:
+    enable: true
+    enhanced-mode: fake-ip
+    fake-ip-range: 198.18.0.1/16
+    fake-ip-filter:
+        - '*.lan'
+        - '*.local'
+        - localhost.ptlogin2.qq.com
+    listen: 127.0.0.1:65533
+    prefer-h3: false
+    nameserver:
+        - https://1.1.1.1/dns-query
+        - https://8.8.8.8/dns-query
+        - 1.1.1.1
+        - 8.8.8.8
+    fallback:
+        - https://1.0.0.1/dns-query
+        - https://8.8.4.4/dns-query
+    default-nameserver:
+        - 1.1.1.1
+        - 8.8.8.8
+    proxy-server-nameserver:
+        - https://1.1.1.1/dns-query
+sniffer:
+    enable: true
+    sniff:
+        HTTP:
+            ports:
+                - 80
+                - 8080
+        QUIC:
+            ports:
+                - 443
+        TLS:
+            ports:
+                - 443
+                - 8443

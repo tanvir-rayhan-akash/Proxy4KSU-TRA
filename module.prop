@@ -1,0 +1,7 @@
+id=proxy4ksu
+name=Proxy4KSU
+version=v3.5.1-TRA
+versionCode=20260623b
+author=TRA - Tanvir Rayhan Akash
+description=System Proxy [TRA Edition - Max Speed & Stability]
+updateJson=https://raw.githubusercontent.com/nhAsif/Proxy4KSU/master/update.json
