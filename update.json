@@ -1,6 +1,6 @@
 {
-  "version": "v3.5.1-TRA",
-  "versionCode": 20260623,
-  "zipUrl": "https://github.com/tanvir-rayhan-akash/Proxy4KSU-TRA/releases/download/v3.5.1-TRA/Proxy4KSU-3.5.1-TRA-Release.zip",
-  "changelog": "https://raw.githubusercontent.com/tanvir-rayhan-akash/Proxy4KSU-TRA/main/changelog.md"
+	"version": "v3.6.0-TRA",
+	"versionCode": 20260704,
+	"zipUrl": "https://github.com/tanvir-rayhan-akash/Proxy4KSU-TRA/releases/download/v3.6.0-TRA/Proxy4KSU-3.6.0-TRA-Release.zip",
+	"changelog": "https://raw.githubusercontent.com/tanvir-rayhan-akash/Proxy4KSU-TRA/main/changelog.md"
 }
